@@ -50,4 +50,11 @@ class User extends Authenticatable
 
         return $users;
     }
+
+    public function comments()
+    {
+        // usar este se as colunas nao seguem o padrao do laravel
+        // return $this->hasMany(Comment::class,'user_id', 'id');
+        return $this->hasMany(Comment::class);
+    }
 }

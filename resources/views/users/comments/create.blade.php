@@ -7,7 +7,7 @@
         Novo Comentário Para o Usuário {{ $user->name }}
     </h1>
 
-    @include('includes.validations-form')
+    @include('includes.validation-form')
 
     <form action="{{ route('comments.store', $user->id) }}" method="post">
         @include('users.comments._partials.form')

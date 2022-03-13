@@ -1,7 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\CommentControler;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/users/{id}/comments/create', [CommentControler::class, 'create'])->name('comments.create');
+Route::get('/users/{user}/comments/{id}', [CommentControler::class, 'edit'])->name('comments.edit');
+Route::put('/comments/{id}', [CommentControler::class, 'update'])->name('comments.update');
+Route::post('/users/{id}/comments', [CommentControler::class, 'store'])->name('comments.store');
+Route::get('/users/{id}/comments', [CommentControler::class, 'index'])->name('comments.index');
 
 Route::delete('/users/{id}', [UserController::class, 'delete'])->name('users.delete');
 Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
