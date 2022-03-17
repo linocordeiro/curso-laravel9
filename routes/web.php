@@ -19,5 +19,6 @@ Route::post('/users/store', [UserController::class, 'store'])->name('users.store
 Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 
 Route::get('/', function () {
-    return view('welcome');
+   return redirect()->route('users.index');
+    // return view('welcome');
 });
