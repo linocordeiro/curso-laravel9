@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUpdateComment;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class CommentControler extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $userId)
+    public function store(StoreUpdateComment $request, $userId)
     {
         if (!($user = $this->user->find($userId))) {
             return redirect()->back();
@@ -90,8 +91,18 @@ class CommentControler extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreUpdateComment $request, $id)
     {
+        if (!($comment = $this->comment->find($id))) {
+            return redirect()->back();
+        }
+
+        $comment->update($request->only('body', 'visible'));
+
+        $user = $comment->user;
+        $comments = $user->comments;
+
+        return view('users.comments.index', ['user' => $user, 'comments' => $comments]);
     }
 
     /**
