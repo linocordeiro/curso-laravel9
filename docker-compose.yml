@@ -3,7 +3,7 @@ version: "3.7"
 services:
     # image project
     app:
-        container_name: especializati-laravel-9
+        container_name: eti-laravel-9
         build:
             context: .
             dockerfile: Dockerfile
@@ -12,62 +12,82 @@ services:
         working_dir: /var/www/
         volumes:
             - ./:/var/www
-        depends_on: 
+        depends_on:
             - redis
-        networks: 
+        networks:
             - laravel-9
-    
+
     # nginx
     nginx:
-        container_name: especializati-nginx
+        container_name: eti-nginx
         image: nginx:alpine
         restart: unless-stopped
-        ports: 
+        ports:
             - "8989:80"
-        volumes: 
+        volumes:
             - ./:/var/www
             - ./docker/nginx/:/etc/nginx/conf.d/
-        networks: 
+        networks:
             - laravel-9
 
     # db mysql
     mysql:
-        container_name: especializati-mysql
+        container_name: eti-mysql
         image: mysql:5.7.22
         restart: unless-stopped
-        environment: 
+        environment:
             MYSQL_DATABASE: ${DB_DATABASE}
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_USER: ${DB_USERNAME}
-        volumes: 
+        volumes:
             - ./.docker/mysql/dbdata:/var/lib/mysql
-        ports: 
+        ports:
             - "3388:3306"
-        networks: 
+        networks:
+            - laravel-9
+
+    #phpmyadmin
+    phpmyadmin:
+        container_name: eti-phpmyadmin
+        image: phpmyadmin
+        restart: unless-stopped
+        environment:
+            - PMA_ARBITRARY=1
+            - MYSQL_USER=${PMA_USER}
+            - MYSQL_PASSWORD=${PMA_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${PMA_ROOT_PASSWORD}
+            - MAX_EXECUTION_TIME=${PMA_MAX_EXECUTION_TIME}
+            - MEMORY_LIMIT=${PMA_MEMORY_LIMIT}
+            - UPLOAD_LIMIT=${PMA_UPLOAD_LIMIT}
+        ports:
+        - "${PMA_PORT}:80"
+        depends_on:
+            - mysql
+        networks:
             - laravel-9
 
     # queue
     queue:
-        container_name: especializati-queue
+        container_name: eti-queue
         image: especializati/laravel9-app
         restart: unless-stopped
         command: "php artisan queue:work"
-        volumes: 
+        volumes:
             - ./:/var/www
-        depends_on: 
+        depends_on:
             - redis
             - app
-        networks: 
+        networks:
             - laravel-9
 
     # redis
     redis:
-        container_name: especializati-redis
+        container_name: eti-redis
         image: redis:latest
-        networks: 
+        networks:
             - laravel-9
 
-networks: 
+networks:
     laravel-9:
         driver: bridge
