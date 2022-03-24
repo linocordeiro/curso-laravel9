@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUpdateUserFormRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class UserController
+ * @package App\Http\Controllers
+ * @property-read Request $request
+ */
 class UserController extends Controller
 {
     protected $model;
@@ -63,7 +69,18 @@ class UserController extends Controller
         //        dd($request);
         $dados = $request->all();
         $dados['password'] = bcrypt($request->password);
-        User::create($dados);
+
+        //        dd($request->image);
+        if ($request->image) {
+            //            $dados['image'] = $request->image->store('users');
+
+            //renomeando imagem
+            $extension = $request->image->getClientOriginalExtension();
+            $dados['image'] = $request->image->storeAs('users', now() . ".{$extension}");
+        }
+
+        $this->model->create($dados);
+        //        User::create($dados);
 
         return redirect()->route('users.index');
     }
@@ -88,6 +105,14 @@ class UserController extends Controller
 
         if ($request->password) {
             $dados['password'] = bcrypt($request->password);
+        }
+
+        if ($request->image) {
+            if ($user->image && Storage::exists($user->image)) {
+                Storage::delete($user->image);
+            }
+
+            $dados['image'] = $request->image->store('users');
         }
 
         $user->update($dados);
