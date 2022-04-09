@@ -130,4 +130,13 @@ class UserController extends Controller
 
         return redirect()->route('users.index');
     }
+
+    public function getRelatorio()
+    {
+        $users = User::all();
+        return \PDF::loadView('users.report', compact('users'))
+            // Se quiser que fique no formato a4 retrato: ->setPaper('a4', 'landscape')
+            //            ->download('users-report.pdf');
+            ->stream();
+    }
 }

@@ -18,10 +18,15 @@ Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edi
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+Route::get('/users/report', [UserController::class, 'getRelatorio'])->name('users.report');
 Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 
+//Route::get('/report', function () {
+//    return redirect()->route('users.report');
+//    // return view('welcome');
+//});
 //index
 Route::get('/', function () {
-   return redirect()->route('users.index');
+    return redirect()->route('users.index');
     // return view('welcome');
 });
