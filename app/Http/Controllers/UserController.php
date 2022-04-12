@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUpdateUserFormRequest;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+//use Dompdf\Dompdf;
+//use Barryvdh\DomPDF\Facade as PDF1;
 
 /**
  * Class UserController
  * @package App\Http\Controllers
  * @property-read Request $request
+ * @property-read Pdf PDF
  */
 class UserController extends Controller
 {
@@ -134,7 +138,8 @@ class UserController extends Controller
     public function getRelatorio()
     {
         $users = User::all();
-        return \PDF::loadView('users.report', compact('users'))
+
+        return PDF::loadView('users.report', compact('users'))
             // Se quiser que fique no formato a4 retrato: ->setPaper('a4', 'landscape')
             //            ->download('users-report.pdf');
             ->stream();
